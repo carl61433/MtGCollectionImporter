@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTG Collection Simplifier</title>
+    <style>
+        /* Add some basic styling to make the page look decent */
+        body {
+            font-family: Arial, sans-serif;
+            width: 800px;
+            margin: 40px auto;
+        }
+        
+        .form-container {
+            float: left;
+            width: 400px;
+        }
+        
+        .input-field {
+            margin-bottom: 20px;
+        }
+        
+        .large-text-box {
+            float: right;
+            height: 500px;
+            width: 350px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MTG Collection Simplifier</h1>
+	
+	<p id="demo"></p>
+    
+    <div class="form-container">
+        <label class="input-field">Set Code:</label>
+        <input type="text" id="set-code" name="set-code"><br><br>
+        
+        <label class="input-field">Card #:</label>
+        <input type="text" id="card-number" name="card-number"><br><br>
+        
+        <label class="input-field">Foil?</label>
+        <input type="checkbox" id="foil-checkbox" name="foil-checkbox"><br><br>
+        
+        <button id="add-to-list">Add to list</button><br><br>
+
+        <label id="error-message">Waiting...</label><br><br>
+    </div>
+    
+    <div class="infobox">
+        <textarea id="cardList" name="cardList" rows="150" cols="50">Count,Name,Edition,Collector Number,Foil</textarea>
+        <button onclick="downloadFile()">Download as CSV</button>
+    </div>
+</body>
+</html>
