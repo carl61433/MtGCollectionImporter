@@ -36,23 +36,20 @@
 	
 	<p id="demo"></p>
     
-    <div class="form-container">
-        <label class="input-field">Set Code:</label>
-        <input type="text" id="set-code" name="set-code"><br><br>
-        
-        <label class="input-field">Card #:</label>
-        <input type="text" id="card-number" name="card-number"><br><br>
-        
-        <label class="input-field">Foil?</label>
-        <input type="checkbox" id="foil-checkbox" name="foil-checkbox"><br><br>
-        
-        <button id="add-to-list">Add to list</button><br><br>
+    <div class="formContainer">
+        <label class="inputField">Set Code: <input type="text" name="set-code" placeholder="FIN"></label><br><br>
 
-        <label id="error-message">Waiting...</label><br><br>
+        <label class="inputField">Card #: <input type="text" name="card-number" placeholder="1"></label><br><br>
+        
+        <label class="inputField">Foil? <input type="checkbox" name="foil-checkbox"></label><br><br>      
+        
+        <button name="addToList">Add to list</button><br><br>
+
+        <label id="errorMessage">Waiting...</label><br><br>
     </div>
     
     <div class="infobox">
-        <textarea id="cardList" name="cardList" rows="150" cols="50">Count,Name,Edition,Collector Number,Foil</textarea>
+        <textarea id="cardList" name="cardList" rows="150" cols="50">Count,Name,Edition,Collector Number,Foil</textarea><br><br>
         <button onclick="downloadFile()">Download as CSV</button>
     </div>
 </body>

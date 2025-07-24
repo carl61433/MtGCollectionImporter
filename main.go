@@ -1,10 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
-	"github.com/russross/blackfriday/v2"
 )
 
 func main() {
-	http.ListenAndServe(":8585", http.FileServer(http.Dir(".")))
+	fmt.Println("Listening...")
+	http.Handle("/", http.FileServer(http.Dir(".")))
+	http.HandleFunc("addToList", newCard)
+	http.ListenAndServe(":8585", nil)
+}
+
+func newCard(rw http.ResponseWriter, r *http.Request) {
+	setCode := r.PostFormValue("set-code")
+	//cardNo := r.FormValue("card-number")
+
+	fmt.Println("MtG Set: ", setCode)
 }
