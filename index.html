@@ -8,7 +8,7 @@
         /* Add some basic styling to make the page look decent */
         body {
             font-family: Arial, sans-serif;
-            width: 800px;
+            width: 400px;
             margin: 40px auto;
         }
         
@@ -36,36 +36,58 @@
 	
 	<p id="demo"></p>
     
-    <form id="mainForm" method="POST">
+    <form id="createForm"action="/" method="POST">
         <div class="formContainer">
+            <!--If I just bought a box of cards, I may want a drop-down
+            menu containing all of the sets, and choosing one of them 
+            from there will prefill the set-code field-->
             <label class="inputField">Set Code: </label>
-            <input type="text" name="set-code" placeholder="FIN" required><br><br>
+            <input type="text" id="set-code" placeholder="FIN" required><br><br>
             <label class="inputField">Card #: </label>
-            <input type="number" name="card-number" placeholder="1" required><br><br>
+            <input type="number" id="card-number" placeholder="1" required><br><br>
             <label class="inputField">Foil? </label>     
-            <input type="checkbox" name="foil-checkbox"><br><br> 
-            <button name="addToList" method="POST">Add to list</button><br><br>
+            <input type="checkbox" id="foil-checkbox"><br><br> 
+            <button type="submit">Add to list</button><br><br>
             <label id="errorMessage">Waiting...</label><br><br>
         </div>
     </form>
 
     <div class="infobox">
-        <textarea id="cardList" name="cardList" rows="20" cols="50">Count,Name,Edition,Collector Number,Foil</textarea><br><br>
+        <textarea id="cardList" rows="20" cols="50">Count,Name,Edition,Collector Number,Foil</textarea><br><br>
         <button onclick="downloadFile()">Download as CSV</button>
     </div>
     <script>
-		document.getElementById('add-to-list-button').addEventListener('click', async function() {
+        //Prevent editing of the textfield
+        document.getElementById('cardList').onkeydown = function(e){
+            e.preventDefault();
+        }
+        document.getElementById('cardList').oncut = function(e){
+            e.preventDefault();
+        }
+        document.getElementById('cardList').onpaste = function(e){
+            e.preventDefault();
+        }
+        const url = 'https://api.scryfall.com/';
+
+        const createForm = document.getElementById('createForm');
+        createForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+		//document.getElementByType('addButton').addEventListener('click', async function() {
+            console.log("test")
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
 			const isFoil= document.getElementById('foil-checkbox').checked;
             //Pass this info to the server
-            fetch(postPath, {
+            const formData = {
+                code: setCode,
+                num: cardNumber,
+                foil: isFoil
+            };
+            fetch("/", {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
+                body: JSON.stringify(formData)
+            });
+            console.log(JSON.stringify(formData));
         });
     </script>
 </body>

@@ -5,17 +5,32 @@ import (
 	"net/http"
 )
 
+type card struct {
+	set  string
+	num  string
+	name string
+	foil bool
+}
+
+func newCard(set string, num string) *card {
+	c := card{}
+	c.set = set
+	c.num = num
+
+	//path := 1
+	//fmt.Println("MtG Set: ", set, "Card number: ", num)
+	return (&c)
+}
+
 func main() {
 	fmt.Println("Listening...")
-	http.HandleFunc("/addToList", newCard)
+	http.HandleFunc("/submit", cardRequest)
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.ListenAndServe(":8585", nil)
 }
 
-func newCard(rw http.ResponseWriter, r *http.Request) {
+func cardRequest(rw http.ResponseWriter, r *http.Request) {
 	setCode := r.FormValue("set-code")
-	//cardNo := r.FormValue("card-number")
-
-	fmt.Println("MtG Set: ", setCode)
-	//Do more stuff here
+	cardNo := r.FormValue("card-number")
+	newCard(setCode, cardNo)
 }
