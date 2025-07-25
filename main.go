@@ -30,6 +30,7 @@ func main() {
 }
 
 func cardRequest(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("test")
 	setCode := r.FormValue("set-code")
 	cardNo := r.FormValue("card-number")
 	newCard(setCode, cardNo)
