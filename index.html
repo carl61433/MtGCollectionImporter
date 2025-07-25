@@ -36,23 +36,37 @@
 	
 	<p id="demo"></p>
     
-    <form action="addToList" method="POST">
+    <form id="mainForm" method="POST">
         <div class="formContainer">
-            <label class="inputField">Set Code: <input type="text" name="set-code" placeholder="FIN" method="POST"></label><br><br>
-
-            <label class="inputField">Card #: <input type="text" name="card-number" placeholder="1"></label><br><br>
-            
-            <label class="inputField">Foil? <input type="checkbox" name="foil-checkbox"></label><br><br>      
-            
-            <button name="add">Add to list</button><br><br>
-
+            <label class="inputField">Set Code: </label>
+            <input type="text" name="set-code" placeholder="FIN" required><br><br>
+            <label class="inputField">Card #: </label>
+            <input type="number" name="card-number" placeholder="1" required><br><br>
+            <label class="inputField">Foil? </label>     
+            <input type="checkbox" name="foil-checkbox"><br><br> 
+            <button name="addToList" method="POST">Add to list</button><br><br>
             <label id="errorMessage">Waiting...</label><br><br>
         </div>
     </form>
 
     <div class="infobox">
-        <textarea id="cardList" name="cardList" rows="150" cols="50">Count,Name,Edition,Collector Number,Foil</textarea><br><br>
+        <textarea id="cardList" name="cardList" rows="20" cols="50">Count,Name,Edition,Collector Number,Foil</textarea><br><br>
         <button onclick="downloadFile()">Download as CSV</button>
     </div>
+    <script>
+		document.getElementById('add-to-list-button').addEventListener('click', async function() {
+			const setCode = document.getElementById('set-code').value;
+			const cardNumber = document.getElementById('card-number').value;
+			const isFoil= document.getElementById('foil-checkbox').checked;
+            //Pass this info to the server
+            fetch(postPath, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+        });
+    </script>
 </body>
 </html>
