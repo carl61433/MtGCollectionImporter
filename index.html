@@ -47,7 +47,7 @@
             <input type="number" id="card-number" placeholder="1" required><br><br>
             <label class="inputField">Foil? </label>     
             <input type="checkbox" id="foil-checkbox"><br><br> 
-            <button type="submit">Add to list</button><br><br>
+            <button type="/submit">Add to list</button><br><br>
             <label id="errorMessage">Waiting...</label><br><br>
         </div>
     </form>
@@ -72,8 +72,6 @@
         const createForm = document.getElementById('createForm');
         createForm.addEventListener('submit', function(event) {
             event.preventDefault();
-		//document.getElementByType('addButton').addEventListener('click', async function() {
-            console.log("test")
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
 			const isFoil= document.getElementById('foil-checkbox').checked;
@@ -83,7 +81,7 @@
                 num: cardNumber,
                 foil: isFoil
             };
-            fetch("/", {
+            fetch("/submit", {
                 method: 'POST',
                 body: JSON.stringify(formData)
             });
