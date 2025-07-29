@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,9 +11,9 @@ import (
 
 type Card struct {
 	Set   string `json:"set"`
-	Num   string `json:"num"`
-	Foil  bool   `json:"foil"`
+	Num   string `json:"collector_number"`
 	Name  string `json:"name"`
+	Foil  bool   `json:"foil"`
 	Count int
 }
 
@@ -35,10 +36,10 @@ func cardRequest(rw http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("Output: " + card.Set + "," + card.Num + "," + card.Foil)
 	//fmt.Println(card) //Example: {FIN 1 false  0}
 	url := "https://api.scryfall.com/cards/" + card.Set + "/" + card.Num
-	getCardName(url)
+	getCardName(url, card.Foil)
 }
 
-func getCardName(url string) *Card {
+func getCardName(url string, foil bool) *Card {
 	c := Card{}
 	// Create a new HTTP client
 	client := &http.Client{
@@ -69,10 +70,44 @@ func getCardName(url string) *Card {
 		fmt.Println("Error reading response body:", err)
 		return &c
 	}
-	fmt.Println(c)
 	c.Count += 1
+	c.Foil = foil
+	fmt.Println(c)
 
-	//path := 1
-	//fmt.Println("MtG Set: ", c.Set, "Card number: ", c.Num)
+	sendCardInfo()
 	return &c
+}
+
+func sendCardInfo() *Card {
+	//Send the card back to the front end
+	c := Card{}
+	// Create a new HTTP client
+	client := &http.Client{
+		Timeout: time.Second * 10, // Timeout each requests
+	}
+
+	jsonCard, err := json.Marshal(c)
+	if err != nil {
+		fmt.Printf("Error occurred during marshalling: %s", err.Error())
+	}
+	req, err := http.NewRequest("POST", "http://localhost:8585/index.html", bytes.NewBuffer(jsonCard))
+	if err != nil {
+		fmt.Println("Error making request:", err)
+		return &c
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error making request:", err)
+		return &c
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+
+	return &c
+
 }
