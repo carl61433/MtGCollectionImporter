@@ -67,7 +67,7 @@
         document.getElementById('cardList').onpaste = function(e){
             e.preventDefault();
         }
-        const url = 'https://api.scryfall.com/';
+        //const url = 'https://api.scryfall.com/';
 
         const createForm = document.getElementById('createForm');
         createForm.addEventListener('submit', function(event) {
@@ -75,9 +75,9 @@
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
 			const isFoil= document.getElementById('foil-checkbox').checked;
-            //Pass this info to the server
+            //Pass this info to the server as json
             const formData = {
-                code: setCode,
+                set: setCode,
                 num: cardNumber,
                 foil: isFoil
             };
