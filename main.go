@@ -107,6 +107,7 @@ func sendCardInfo() *Card {
 
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
+	fmt.Println("response Body:", resp.Body)
 
 	return &c
 

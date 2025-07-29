@@ -91,7 +91,7 @@
         async function fetchDataFromGo(response) {
             await new Promise(r => setTimeout(r, 100));
             try {
-                const response = await fetch('http://localhost:8585/');
+                const response = await fetch('/');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
