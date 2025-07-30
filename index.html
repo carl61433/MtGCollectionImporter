@@ -92,7 +92,6 @@
             .then((response) => response.json())
             .then((cardJson) => {
                 const cardName = cardJson.name;
-                console.log(cardName)
                 let foilStr = "foil"
                 if (!isFoil) {
                     foilStr = ""
