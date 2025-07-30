@@ -67,14 +67,18 @@
         document.getElementById('cardList').onpaste = function(e){
             e.preventDefault();
         }
-        //const url = 'https://api.scryfall.com/';
+        
+		const mapData = new Map();
+		mapData.set("Initial","Count,Name,Edition,Collector Number,Foil");
+        let count = 0;
 
         const createForm = document.getElementById('createForm');
         createForm.addEventListener('submit', function(e) {
             e.preventDefault();
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
-			const isFoil= document.getElementById('foil-checkbox').checked;
+			const isFoil = document.getElementById('foil-checkbox').checked;
+            let allCards = '';
             //Pass this info to the server as json
             const formData = {
                 set: setCode,
@@ -85,29 +89,39 @@
                 method: 'POST',
                 body: JSON.stringify(formData)
             })
-            .then((response) => response.text())
-            .then((data) => {
-                cardList.innerText = data;
+            .then((response) => response.json())
+            .then((cardJson) => {
+                const cardName = cardJson.name;
+                console.log(cardName)
+                let foilStr = "foil"
+                if (!isFoil) {
+                    foilStr = ""
+                }
+                if (!mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
+                    count = 0;
+                    mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, foilStr]);
+                    console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
+                }
+
+                mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, foilStr]);
+                
+                for (const value of mapData.values()) {
+                    allCards += `${value}\n`;
+                }
+                document.getElementById("cardList").value = allCards;
             });
         });
-        /*
-        async function fetchDataFromGo() {
-            try {
-                let response = await fetch('/get', {
-                    method: 'GET'
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                let data = await response.json();
-                console.log("Data received from Go:", data);
-                //This is where the javascript needs to add data to a map
-                document.getElementById('cardList').innerText = `Message: ${data}`;
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
-        */
+    </script>
+    <script>
+        const downloadFile = () => {
+            const link = document.createElement("a");
+            const content = document.getElementById("cardList").value;
+            const file = new Blob([content], { type: 'text/csv' });
+            link.href = URL.createObjectURL(file);
+            link.download = "cards.csv";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
     </script>
 </body>
 </html>

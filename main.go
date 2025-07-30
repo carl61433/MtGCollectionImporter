@@ -45,7 +45,6 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCardName(url string, foil bool) *Card {
-	fmt.Println("URL: " + url)
 	c := Card{}
 	// Create a new HTTP client
 	client := &http.Client{
