@@ -70,8 +70,8 @@
         //const url = 'https://api.scryfall.com/';
 
         const createForm = document.getElementById('createForm');
-        createForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+        createForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
 			const isFoil= document.getElementById('foil-checkbox').checked;
@@ -84,26 +84,30 @@
             fetch("/submit", {
                 method: 'POST',
                 body: JSON.stringify(formData)
+            })
+            .then((response) => response.text())
+            .then((data) => {
+                cardList.innerText = data;
             });
-            //console.log(JSON.stringify(formData));
-            fetchDataFromGo();
         });
-        async function fetchDataFromGo(response) {
-            await new Promise(r => setTimeout(r, 100));
+        /*
+        async function fetchDataFromGo() {
             try {
-                const response = await fetch('/');
+                let response = await fetch('/get', {
+                    method: 'GET'
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
+                let data = await response.json();
                 console.log("Data received from Go:", data);
-                // Example: Display data on the page
+                //This is where the javascript needs to add data to a map
                 document.getElementById('cardList').innerText = `Message: ${data}`;
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
-            console.log(response);
         }
+        */
     </script>
 </body>
 </html>

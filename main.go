@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,36 +9,43 @@ import (
 )
 
 type Card struct {
-	Set   string `json:"set"`
-	Num   string `json:"collector_number"`
-	Name  string `json:"name"`
-	Foil  bool   `json:"foil"`
-	Count int
+	Set  string `json:"set"`
+	Num  string `json:"collector_number"`
+	Name string `json:"name"`
+	Foil bool   `json:"foil"`
 }
 
 func main() {
-	fmt.Println("Listening...")
-	http.HandleFunc("/submit", cardRequest)
+	fmt.Println("Starting webserver on port 8585...")
+	http.HandleFunc("/submit", formHandler)
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.ListenAndServe(":8585", nil)
 }
 
-func cardRequest(rw http.ResponseWriter, r *http.Request) {
+func formHandler(w http.ResponseWriter, r *http.Request) {
 	var card Card
 	// decode input or return error
 	err := json.NewDecoder(r.Body).Decode(&card)
 	if err != nil {
-		rw.WriteHeader(400)
-		fmt.Fprintf(rw, "Decode error! please check your JSON formating.\n")
+		w.WriteHeader(400)
+		fmt.Fprintf(w, "Decode error! please check your JSON formating.\n")
 		return
 	}
-	//fmt.Printf("Output: " + card.Set + "," + card.Num + "," + card.Foil)
-	//fmt.Println(card) //Example: {FIN 1 false  0}
 	url := "https://api.scryfall.com/cards/" + card.Set + "/" + card.Num
-	getCardName(url, card.Foil)
+
+	cardData := getCardName(url, card.Foil)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "/")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	w.WriteHeader(http.StatusOK)
+	resBody, _ := json.Marshal(cardData)
+	_, _ = w.Write(resBody)
 }
 
 func getCardName(url string, foil bool) *Card {
+	fmt.Println("URL: " + url)
 	c := Card{}
 	// Create a new HTTP client
 	client := &http.Client{
@@ -70,45 +76,7 @@ func getCardName(url string, foil bool) *Card {
 		fmt.Println("Error reading response body:", err)
 		return &c
 	}
-	c.Count += 1
 	c.Foil = foil
-	fmt.Println(c)
-
-	sendCardInfo()
-	return &c
-}
-
-func sendCardInfo() *Card {
-	//Send the card back to the front end
-	c := Card{}
-	// Create a new HTTP client
-	client := &http.Client{
-		Timeout: time.Second * 10, // Timeout each requests
-	}
-
-	jsonCard, err := json.Marshal(c)
-	if err != nil {
-		fmt.Printf("Error occurred during marshalling: %s", err.Error())
-	}
-	req, err := http.NewRequest("POST", "http://localhost:8585/index.html", bytes.NewBuffer(jsonCard))
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return &c
-	}
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return &c
-	}
-	defer resp.Body.Close()
-
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	fmt.Println("response Body:", resp.Body)
 
 	return &c
-
 }
