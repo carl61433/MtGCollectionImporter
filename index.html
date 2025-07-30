@@ -73,7 +73,7 @@
         let count = 0;
 
         const createForm = document.getElementById('createForm');
-        createForm.addEventListener('submit', function(e) {
+        createForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
@@ -85,30 +85,28 @@
                 collector_number: cardNumber,
                 foil: isFoil
             };
-            fetch("/submit", {
+            const response = await fetch("/submit", {
                 method: 'POST',
                 body: JSON.stringify(formData)
-            })
-            .then((response) => response.json())
-            .then((cardJson) => {
-                const cardName = cardJson.name;
-                let foilStr = "foil"
-                if (!isFoil) {
-                    foilStr = ""
-                }
-                if (!mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
-                    count = 0;
-                    mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, foilStr]);
-                    console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
-                }
-
-                mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, foilStr]);
-                
-                for (const value of mapData.values()) {
-                    allCards += `${value}\n`;
-                }
-                document.getElementById("cardList").value = allCards;
             });
+            const cardJson = await response.json();
+            const cardName = cardJson.name;
+            let foilStr = "foil"
+            if (!isFoil) {
+                foilStr = ""
+            }
+            if (!mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
+                count = 0;
+                mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, foilStr]);
+                console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
+            }
+
+            mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, foilStr]);
+            
+            for (const value of mapData.values()) {
+                allCards += `${value}\n`;
+            }
+            document.getElementById("cardList").value = allCards;
         });
     </script>
     <script>
