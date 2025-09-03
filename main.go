@@ -48,7 +48,7 @@ func getCardName(url string, foil bool) *Card {
 	c := Card{}
 	// Create a new HTTP client
 	client := &http.Client{
-		Timeout: time.Second * 10, // Timeout each requests
+		Timeout: time.Second * 10, // Timeout each request
 	}
 	method := "GET"
 	payload := strings.NewReader(`{"key1":"value1", "key2":"value2"}`)
@@ -76,6 +76,7 @@ func getCardName(url string, foil bool) *Card {
 		return &c
 	}
 	c.Foil = foil
+	c.Name = "\"" + c.Name + "\""
 
 	return &c
 }

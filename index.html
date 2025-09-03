@@ -44,7 +44,8 @@
             <!--Features to add:
                 -Drop down for set code (See above)
                 -Etched option for foil checking
-                -
+                -Move map to back end so that the front-end doesn't handle data other than display
+                -Ways to remove a line?
             -->
             <label class="inputField">Set Code: </label>
             <input type="text" id="set-code" placeholder="FIN" required><br><br>
@@ -79,6 +80,7 @@
 
         const createForm = document.getElementById('createForm');
         createForm.addEventListener('submit', async function(e) {
+            //console.log(count);
             e.preventDefault();
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
@@ -104,6 +106,8 @@
                 count = 0;
                 mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, foilStr]);
                 console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
+            }else{
+                count = mapData.get(`${setCode},${cardNumber},${isFoil}`)[0];
             }
 
             mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, foilStr]);
@@ -112,6 +116,7 @@
                 allCards += `${value}\n`;
             }
             document.getElementById("cardList").value = allCards;
+            document.getElementById("card-number").value = '';
         });
     </script>
     <script>
